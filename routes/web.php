@@ -30,6 +30,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/registros', [RegistrosController::class, 'index'])->name('registros.index');
     Route::get('/registros/export', [RegistrosController::class, 'export'])->name('registros.export');
+    Route::get('/registros/export-pdf', [RegistrosController::class, 'exportPdf'])->name('registros.exportPdf');
     Route::put('/registros/{appointment}', [RegistrosController::class, 'update'])->name('registros.update');
     Route::delete('/registros/{appointment}', [RegistrosController::class, 'destroy'])->name('registros.destroy');
     Route::get('/clientes', [ClienteController::class, 'index'])->name('clientes.index');
