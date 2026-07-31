@@ -9,29 +9,49 @@ use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    public function index(): View
+    public function index()
     {
-        // Esta declaración obtiene los barberos que se hayan registrado
-        $barbers = Barber::with('user')->get();
-        
-        // Esta declaración obtiene las citas del mes actual
-        $now = Carbon::now();
-        $selectedBarberId = request('barber_id');
+        $user = auth()->user();
 
-        $query = Appointment::whereYear('appointment_date', $now->year)
-            ->whereMonth('appointment_date', $now->month)
-            ->with(['client', 'barber', 'service']);
+        // Dashboard Admin
+        if ($user->isAdmin()) {
+            $barbers = Barber::with('user')->get();
+            $now = Carbon::now();
+            $selectedBarberId = request('barber_id');
 
-        if ($selectedBarberId) {
-            $query->where('barber_id', $selectedBarberId);
+            $query = Appointment::whereYear('appointment_date', $now->year)
+                ->whereMonth('appointment_date', $now->month)
+                ->with(['client', 'barber', 'service']);
+
+            if ($selectedBarberId) {
+                $query->where('barber_id', $selectedBarberId);
+            }
+
+            $todaysAppointments = $query->orderBy('appointment_date')->get();
+
+            return view('dashboard.index', compact('barbers', 'todaysAppointments', 'selectedBarberId'));
         }
 
-        $todaysAppointments = $query->orderBy('appointment_date')->get();
+        // El barbero verá sus citas y la comisión que le corresponde por el día
+        if ($user->isBarber()) {
+            $citas = Appointment::with(['client', 'service'])
+                ->where('barber_id', $user->id)
+                ->whereDate('appointment_date', Carbon::today())
+                ->orderBy('appointment_date')
+                ->get();
 
-        return view('dashboard.index', [
-            'barbers' => $barbers,
-            'todaysAppointments' => $todaysAppointments,
-            'selectedBarberId' => $selectedBarberId,
-        ]);
+            $comisionDia = $citas->where('status', 'completed')
+                ->sum(fn ($a) => ($a->service->price ?? 0) * 0.40);
+
+            return view('barbero.dashboard', compact('citas', 'comisionDia'));
+        }
+
+        // Historial donde el cliente vea sus citas
+        $misCitas = Appointment::with(['barber', 'service'])
+            ->where('client_id', $user->id)
+            ->orderByDesc('appointment_date')
+            ->get();
+
+        return view('cliente.dashboard', compact('misCitas'));
     }
 }

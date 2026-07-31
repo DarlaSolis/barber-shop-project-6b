@@ -15,20 +15,29 @@
                 <h1 class="text-2xl font-bold text-black">BarberPro</h1>
                 <p class="text-sm text-gray-600">Panel de Control</p>
             </div>
-
+            
             <nav class="space-y-3">
                 <a href="{{ route('dashboard') }}" class="block px-4 py-3 rounded-lg {{ request()->routeIs('dashboard') ? 'bg-gray-800 text-white' : 'text-black hover:bg-gray-100' }}">
                     Dashboard
                 </a>
-                <a href="{{ route('appointments.create') }}" class="block px-4 py-3 rounded-lg {{ request()->routeIs('appointments.create') ? 'bg-gray-800 text-white' : 'text-black hover:bg-gray-100' }}">
-                    Agendar Cita
-                </a>
-                 <a href="{{ route('registros.index') }}" class="block px-4 py-3 rounded-lg {{ request()->routeIs('registros.index') ? 'bg-gray-800 text-white' : 'text-black hover:bg-gray-100' }}">
-                    Registrar Cobros
-                </a>
-                <a href="{{ route('clientes.index') }}" class="block px-4 py-3 rounded-lg {{ request()->routeIs('clientes.index') ? 'bg-gray-800 text-white' : 'text-black hover:bg-gray-100' }}">
-                    Gestión de Clientes
-                </a>
+
+                @if(auth()->user()->isUser() || auth()->user()->isAdmin())
+                    <a href="{{ route('appointments.create') }}" class="block px-4 py-3 rounded-lg {{ request()->routeIs('appointments.create') ? 'bg-gray-800 text-white' : 'text-black hover:bg-gray-100' }}">
+                        Agendar Cita
+                    </a>
+                @endif
+
+                @if(auth()->user()->isAdmin())
+                    <a href="{{ route('registros.index') }}" class="block px-4 py-3 rounded-lg {{ request()->routeIs('registros.index') ? 'bg-gray-800 text-white' : 'text-black hover:bg-gray-100' }}">
+                        Registrar Cobros
+                    </a>
+                    <a href="{{ route('clientes.index') }}" class="block px-4 py-3 rounded-lg {{ request()->routeIs('clientes.index') ? 'bg-gray-800 text-white' : 'text-black hover:bg-gray-100' }}">
+                        Gestión de Clientes
+                    </a>
+                    <a href="{{ route('reportes.index') }}" class="block px-4 py-3 rounded-lg {{ request()->routeIs('reportes.index') ? 'bg-gray-800 text-white' : 'text-black hover:bg-gray-100' }}">
+                        Reportes
+                    </a>
+                @endif
             </nav>
 
             <div class="mt-12 pt-6 border-t border-gray-200">
