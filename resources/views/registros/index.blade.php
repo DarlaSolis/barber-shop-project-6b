@@ -5,20 +5,33 @@
 @section('content')
 <div class="max-w-6xl">
 
-    {{-- Header --}}
-    <div class="flex justify-between items-start mb-6">
-        <div>
-            <h1 class="text-3xl font-bold text-gray-800">Cobros y Pagos</h1>
-            <span class="text-gray-500 text-sm">Registro completo de transacciones</span>
-        </div>
+  {{-- Header --}}
+<div class="flex flex-nowrap items-center justify-between gap-4 mb-6">
+
+    <div class="min-w-0">
+        <h1 class="text-3xl font-bold text-gray-800">Cobros y Pagos</h1>
+        <span class="text-gray-500 text-sm">Registro completo de transacciones</span>
+    </div>
+
+    <div class="flex items-center gap-3 shrink-0">
+        <a href="{{ route('registros.exportPdf', request()->only(['barber_id','metodo'])) }}"
+           class="flex items-center gap-2 whitespace-nowrap bg-red-500 hover:bg-red-600 text-white font-semibold px-5 py-2 rounded-lg transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6M9 17h3"/>
+            </svg>
+            Exportar PDF
+        </a>
+
         <a href="{{ route('registros.export', request()->only(['barber_id','metodo'])) }}"
-           class="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-semibold px-5 py-2 rounded-lg transition">
+           class="flex items-center gap-2 whitespace-nowrap bg-green-500 hover:bg-green-600 text-white font-semibold px-5 py-2 rounded-lg transition">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/>
             </svg>
-            Exportar Reporte
+            Exportar excel
         </a>
     </div>
+</div>
 
     {{-- Stat Cards --}}
     <div class="flex gap-6 mb-8">
