@@ -7,6 +7,7 @@ use App\Http\Controllers\ServiceController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegistrosController;
 use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\BarberController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -15,6 +16,10 @@ Route::get('/', function () {
 Route::middleware('auth')->group(function () {
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    
+    // Vista Rol de Barbero
+    Route::get('/barber', [BarberController::class, 'index'])->name('barber.index');
+    Route::put('/barber/appointments/{appointment}/status', [BarberController::class, 'updateStatus'])->name('barber.appointments.updateStatus');
     
     // Agendar Citas
     Route::get('/appointments/create', [AppointmentController::class, 'create'])->name('appointments.create');
