@@ -43,7 +43,9 @@ class DashboardController extends Controller
             $comisionDia = $citas->where('status', 'completed')
                 ->sum(fn ($a) => ($a->service->price ?? 0) * 0.40);
 
-            return view('barbero.dashboard', compact('citas', 'comisionDia'));
+            if ($user->isBarber()) {
+                return redirect()->route('barber.index');
+            }
         }
 
         // Historial donde el cliente vea sus citas

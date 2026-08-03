@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
             RoleAccountsSeeder::class,
             BarberSeeder::class,
             ServiceSeeder::class,
+            AppointmentSeeder::class,
         ]);
     }
 }
