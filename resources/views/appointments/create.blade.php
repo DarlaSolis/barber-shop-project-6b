@@ -4,14 +4,14 @@
 
 @section('content')
 <div class="max-w-8xl">
-    <div class="flex items-center justify-between mb-8">
-        <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-100">Agendar Nueva Cita</h1>
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">Agendar Nueva Cita</h1>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     {{-- PRIMER CONTAINER: Seleccionar / Crear Cliente --}}
-    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-slate-700 transition-colors">
-        <h3 class="text-xl font-bold text-gray-800 dark:text-amber-400 mb-4 flex items-center gap-2">👤 Seleccionar Cliente</h3>
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-slate-700 transition-colors">
+        <h3 class="text-lg font-bold text-gray-900 dark:text-amber-400 mb-4">Seleccionar Cliente</h3>
 
         <input type="hidden" id="client_id" name="client_id" value="">
 
@@ -63,7 +63,7 @@
                 <input type="text" id="nuevo-phone" placeholder="Teléfono (opcional)"
                     class="w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"/>
                 <button type="button" onclick="crearCliente()"
-                    class="w-full bg-amber-600 hover:bg-amber-500 text-white text-sm font-semibold py-2.5 rounded-lg transition shadow-md">
+                    class="w-full bg-amber-600 hover:bg-amber-500 text-white text-sm font-semibold py-2.5 rounded-lg transition shadow-sm">
                     Registrar y Seleccionar
                 </button>
                 <p id="nuevo-error" class="text-xs text-red-500 hidden"></p>
@@ -72,18 +72,18 @@
     </div>
 
     <!-- Fecha y Hora -->
-    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-slate-700 transition-colors">
-            <h3 class="text-xl font-bold text-gray-800 dark:text-amber-400 mb-4 flex items-center gap-2">📅 Selecciona Fecha y Hora</h3>
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-slate-700 transition-colors">
+            <h3 class="text-lg font-bold text-gray-900 dark:text-amber-400 mb-4">Selecciona Fecha y Hora</h3>
 
             <form id="appointmentForm" class="space-y-5">
                 <div>
-                    <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2 text-sm">Fecha de la Cita</label>
+                    <label class="block text-gray-700 dark:text-gray-300 font-medium mb-2 text-sm">Fecha de la Cita</label>
                     <input type="date" id="date" name="date" required class="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500" min="{{ date('Y-m-d') }}">
                 </div>
 
                 <div class="grid grid-cols-3 gap-3">
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2 text-xs">Horas</label>
+                        <label class="block text-gray-700 dark:text-gray-300 font-medium mb-2 text-xs">Horas</label>
                         <select id="hour" name="hour" required class="w-full px-2 py-2 border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
                             <option value="">Hora</option>
                             @for($i = 1; $i <= 12; $i++)
@@ -92,7 +92,7 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2 text-xs">Minutos</label>
+                        <label class="block text-gray-700 dark:text-gray-300 font-medium mb-2 text-xs">Minutos</label>
                         <select id="minute" name="minute" required class="w-full px-2 py-2 border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
                             <option value="">Minuto</option>
                             @for($i = 0; $i <= 50; $i += 10)
@@ -101,7 +101,7 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2 text-xs">Período</label>
+                        <label class="block text-gray-700 dark:text-gray-300 font-medium mb-2 text-xs">Período</label>
                         <select id="period" name="period" required class="w-full px-2 py-2 border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
                             <option value="">AM/PM</option>
                             <option value="AM">AM</option>
@@ -112,7 +112,7 @@
 
                 <div class="grid grid-cols-2 gap-3 pt-2">
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2 text-xs">Método de pago</label>
+                        <label class="block text-gray-700 dark:text-gray-300 font-medium mb-2 text-xs">Método de pago</label>
                         <select id="payment_method" name="payment_method" required class="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
                             <option value="">Selecciona</option>
                             <option value="Efectivo">Efectivo</option>
@@ -121,7 +121,7 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2 text-xs">Propina (opcional)</label>
+                        <label class="block text-gray-700 dark:text-gray-300 font-medium mb-2 text-xs">Propina (opcional)</label>
                         <input type="text" id="tip" name="tip" class="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="$0.00">
                     </div>
                 </div>
@@ -129,13 +129,13 @@
         </div>
 
     <!-- Servicios + Barberos + Sucursal -->
-    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-slate-700 transition-colors">
-            <h3 class="text-xl font-bold text-gray-800 dark:text-amber-400 mb-4 flex items-center gap-2">✂️ Sucursal, Servicio y Barbero</h3>
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-slate-700 transition-colors">
+            <h3 class="text-lg font-bold text-gray-900 dark:text-amber-400 mb-4">Sucursal, Servicio y Barbero</h3>
 
             <div class="space-y-5">
                 @if(isset($branches) && count($branches) > 0)
                 <div>
-                    <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2 text-sm">Sucursal</label>
+                    <label class="block text-gray-700 dark:text-gray-300 font-medium mb-2 text-sm">Sucursal</label>
                     <select id="branch_id" name="branch_id" class="w-full px-4 py-2.5 border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
                         <option value="">-- Sucursal Principal --</option>
                         @foreach($branches as $branch)
@@ -146,7 +146,7 @@
                 @endif
 
                 <div>
-                    <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2 text-sm">Tipo de Servicio</label>
+                    <label class="block text-gray-700 dark:text-gray-300 font-medium mb-2 text-sm">Tipo de Servicio</label>
                     <select id="service_id" name="service_id" required class="w-full px-4 py-2.5 border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" onchange="checkFormValidity()">
                         <option value="">-- Selecciona un servicio --</option>
                         @foreach($services as $service)
@@ -155,7 +155,7 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2 text-sm">Selecciona Barbero</label>
+                    <label class="block text-gray-700 dark:text-gray-300 font-medium mb-2 text-sm">Selecciona Barbero</label>
                     <select id="barber_id" name="barber_id" required class="w-full px-4 py-2.5 border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" onchange="checkFormValidity()">
                         <option value="">-- Selecciona un barbero --</option>
                         @foreach($barbers as $barber)
@@ -163,7 +163,7 @@
                         @endforeach
                     </select>
                 </div>
-                <button id="submitBtn" type="submit" form="appointmentForm" class="w-full bg-amber-600 hover:bg-amber-500 disabled:bg-gray-400 dark:disabled:bg-slate-700 text-white font-bold py-3.5 px-4 rounded-xl transition cursor-not-allowed shadow-md" disabled onclick="submitAppointment(event)">
+                <button id="submitBtn" type="submit" form="appointmentForm" class="w-full bg-amber-600 hover:bg-amber-500 disabled:bg-gray-400 dark:disabled:bg-slate-700 text-white font-bold py-3.5 px-4 rounded-xl transition cursor-not-allowed shadow-sm" disabled onclick="submitAppointment(event)">
                     Confirmar y Reservar Cita
                 </button>
             </div>
