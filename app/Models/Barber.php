@@ -6,7 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Barber extends Model
 {
-    protected $fillable = ['user_id', 'description', 'clients_count'];
+    protected $fillable = ['user_id', 'branch_id', 'description', 'clients_count'];
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class);
+    }
 
     public function user()
     {

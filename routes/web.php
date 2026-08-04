@@ -13,6 +13,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Ruta pública exclusiva para clientes de Reserva Online (sin login, sin sidebar)
+Route::get('/reservar', [AppointmentController::class, 'publicBooking'])->name('public.booking');
+Route::post('/appointments', [AppointmentController::class, 'store'])->name('appointments.store');
+Route::post('/clientes/quick', [ClienteController::class, 'quickStore'])->name('clientes.quickStore');
+Route::get('/api/services', [ServiceController::class, 'index']);
+
 Route::middleware('auth')->group(function () {
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -20,13 +26,9 @@ Route::middleware('auth')->group(function () {
     // Vista Rol de Barbero
     Route::get('/barber', [BarberController::class, 'index'])->name('barber.index');
     Route::put('/barber/appointments/{appointment}/status', [BarberController::class, 'updateStatus'])->name('barber.appointments.updateStatus');
-    
-    // Agendar Citas
+
+    // Agendar Citas Interno (Barbero / Admin)
     Route::get('/appointments/create', [AppointmentController::class, 'create'])->name('appointments.create');
-    Route::post('/appointments', [AppointmentController::class, 'store'])->name('appointments.store');
-    
-    // API para servicios
-    Route::get('/api/services', [ServiceController::class, 'index']);
     
     // Perfil
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

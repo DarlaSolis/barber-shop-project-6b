@@ -47,6 +47,21 @@ class User extends Authenticatable
 
     public function isBarber()
     {
-        return $this->role === 'barber';
+        return $this->role === 'barber' || $this->role === 'barbero';
+    }
+
+    public function isAdminGeneral()
+    {
+        return $this->role === 'admin' || $this->role === 'admin_general';
+    }
+
+    public function isEncargado()
+    {
+        return $this->role === 'encargado' || $this->role === 'encargado_sucursal';
+    }
+
+    public function isCliente()
+    {
+        return $this->role === 'user' || $this->role === 'cliente';
     }
 }

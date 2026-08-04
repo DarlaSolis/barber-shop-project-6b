@@ -19,7 +19,13 @@
             </div>
 
             <nav class="space-y-3">
-                @if(Auth::check() && Auth::user()->isBarber())
+                @if(!Auth::check())
+                    {{-- Opciones para Usuario No Autenticado (Público) --}}
+                    <a href="{{ route('appointments.create') }}"
+                        class="block px-4 py-3 rounded-lg bg-gray-800 text-white">
+                        Agendar Cita
+                    </a>
+                @elseif(Auth::user()->isBarber())
                     {{-- Opciones para el Barbero --}}
                     <a href="{{ route('barber.index') }}"
                         class="block px-4 py-3 rounded-lg {{ request()->routeIs('barber.index') ? 'bg-gray-800 text-white' : 'text-black hover:bg-gray-100' }}">
@@ -29,8 +35,8 @@
                         class="block px-4 py-3 rounded-lg {{ request()->routeIs('appointments.create') ? 'bg-gray-800 text-white' : 'text-black hover:bg-gray-100' }}">
                         Agendar Cita
                     </a>
-                @elseif(Auth::check() && Auth::user()->role === 'user')
-                    {{-- Opciones para el Cliente / Usuario Normal --}}
+                @elseif(Auth::user()->isCliente())
+                    {{-- Opciones para el Cliente --}}
                     <a href="{{ route('appointments.create') }}"
                         class="block px-4 py-3 rounded-lg {{ request()->routeIs('appointments.create') ? 'bg-gray-800 text-white' : 'text-black hover:bg-gray-100' }}">
                         Agendar Cita
@@ -61,16 +67,31 @@
             </nav>
 
             <div class="mt-12 pt-6 border-t border-gray-200">
-                <p class="text-sm text-black font-semibold">{{ Auth::user()?->name ?? 'Usuario' }}</p>
-                <p class="text-xs text-gray-500 mb-3 capitalize">
-                    {{ Auth::user()?->isBarber() ? 'Barbero' : (Auth::user()?->role === 'admin' ? 'Administrador' : 'Cliente') }}
-                </p>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="text-red-600 hover:underline text-sm font-medium">
-                        Cerrar Sesión
-                    </button>
-                </form>
+                @if(Auth::check())
+                    <p class="text-sm text-black font-semibold">{{ Auth::user()->name }}</p>
+                    <p class="text-xs text-gray-500 mb-3 font-medium">
+                        @if(Auth::user()->isAdminGeneral())
+                            Administrador General
+                        @elseif(Auth::user()->isEncargado())
+                            Encargado de Sucursal
+                        @elseif(Auth::user()->isBarber())
+                            Barbero
+                        @else
+                            Cliente
+                        @endif
+                    </p>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="text-red-600 hover:underline text-sm font-medium">
+                            Cerrar Sesión
+                        </button>
+                    </form>
+                @else
+                    <p class="text-xs text-gray-500 mb-2">Modo Público</p>
+                    <a href="{{ route('login') }}" class="inline-block w-full text-center px-3 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-xs font-semibold transition">
+                        Iniciar Sesión
+                    </a>
+                @endif
             </div>
         </aside>
 

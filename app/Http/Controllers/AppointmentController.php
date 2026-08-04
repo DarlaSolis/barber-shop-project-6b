@@ -14,6 +14,11 @@ use Carbon\Carbon;
 
 class AppointmentController extends Controller
 {
+    public function publicBooking()
+    {
+        return $this->create();
+    }
+
     public function create()
     {
         $services = Service::all();
