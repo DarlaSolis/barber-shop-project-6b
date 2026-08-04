@@ -128,11 +128,23 @@
             </form>
         </div>
 
-    <!-- Servicios + Barberos -->
+    <!-- Servicios + Barberos + Sucursal -->
     <div class="bg-white dark:bg-slate-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-slate-700 transition-colors">
-            <h3 class="text-xl font-bold text-gray-800 dark:text-amber-400 mb-4 flex items-center gap-2">✂️ Servicio y Barbero</h3>
+            <h3 class="text-xl font-bold text-gray-800 dark:text-amber-400 mb-4 flex items-center gap-2">✂️ Sucursal, Servicio y Barbero</h3>
 
-            <div class="space-y-6">
+            <div class="space-y-5">
+                @if(isset($branches) && count($branches) > 0)
+                <div>
+                    <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2 text-sm">Sucursal</label>
+                    <select id="branch_id" name="branch_id" class="w-full px-4 py-2.5 border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        <option value="">-- Sucursal Principal --</option>
+                        @foreach($branches as $branch)
+                            <option value="{{ $branch->id }}">{{ $branch->name }} - {{ $branch->address }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                @endif
+
                 <div>
                     <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2 text-sm">Tipo de Servicio</label>
                     <select id="service_id" name="service_id" required class="w-full px-4 py-2.5 border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" onchange="checkFormValidity()">
@@ -303,6 +315,7 @@ function submitAppointment(event) {
         period:         document.getElementById('period').value,
         service_id:     document.getElementById('service_id').value,
         barber_id:      document.getElementById('barber_id').value,
+        branch_id:      document.getElementById('branch_id') ? document.getElementById('branch_id').value : null,
         client_id:      document.getElementById('client_id').value,
         payment_method: document.getElementById('payment_method').value,
         tip:            document.getElementById('tip').value,

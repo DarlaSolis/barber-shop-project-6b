@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Appointment;
 use App\Models\Barber;
+use App\Models\Branch;
 use App\Models\Service;
 use App\Models\User;
 use App\Services\WapiService;
@@ -23,14 +24,15 @@ class AppointmentController extends Controller
     {
         $services = Service::all();
         $barbers  = Barber::with('user')->get();
+        $branches = class_exists(Branch::class) ? Branch::where('is_active', true)->get() : collect();
 
         if (auth()->check() && auth()->user()->isCliente()) {
-            return view('cliente.reservar', compact('services', 'barbers'));
+            return view('cliente.reservar', compact('services', 'barbers', 'branches'));
         }
 
         $clientes = User::whereIn('role', ['user', 'cliente'])->orderBy('name')->get();
 
-        return view('appointments.create', compact('services', 'barbers', 'clientes'));
+        return view('appointments.create', compact('services', 'barbers', 'clientes', 'branches'));
     }
 
     public function store (Request $request): JsonResponse
@@ -42,6 +44,7 @@ class AppointmentController extends Controller
             'period'         => 'required|in:AM,PM',
             'service_id'     => 'required|exists:services,id',
             'barber_id'      => 'required|exists:users,id',
+            'branch_id'      => 'nullable|exists:branches,id',
             'client_id'      => 'nullable|exists:users,id',
             'payment_method' => 'nullable|in:Efectivo,Tarjeta,Transferencia',
             'tip'            => 'nullable|numeric|min:0',
@@ -68,15 +71,21 @@ class AppointmentController extends Controller
             $validated['date'] . ' ' . str_pad($hour, 2, '0', STR_PAD_LEFT) . ':' . str_pad($validated['minute'], 2, '0', STR_PAD_LEFT)
         );
 
-        $appointment = Appointment::create([
-            'client_id'      => $clientId,
-            'barber_id'      => $validated['barber_id'],
-            'service_id'     => $validated['service_id'],
+        $appointmentData = [
+            'client_id'        => $clientId,
+            'barber_id'        => $validated['barber_id'],
+            'service_id'       => $validated['service_id'],
             'appointment_date' => $appointmentDate,
-            'status'         => 'pending',
-            'payment_method' => $validated['payment_method'] ?? null,
-            'tip'            => $validated['tip'] ?? 0,
-        ]);
+            'status'           => 'pending',
+            'payment_method'   => $validated['payment_method'] ?? null,
+            'tip'              => $validated['tip'] ?? 0,
+        ];
+
+        if (!empty($validated['branch_id'])) {
+            $appointmentData['branch_id'] = $validated['branch_id'];
+        }
+
+        $appointment = Appointment::create($appointmentData);
 
         $appointment->load(['client', 'barber', 'service']);
 
