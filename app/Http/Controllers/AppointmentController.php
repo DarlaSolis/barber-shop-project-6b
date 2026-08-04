@@ -24,11 +24,11 @@ class AppointmentController extends Controller
         $services = Service::all();
         $barbers  = Barber::with('user')->get();
 
-        if (auth()->user()->isUser()) {
+        if (auth()->check() && auth()->user()->isCliente()) {
             return view('cliente.reservar', compact('services', 'barbers'));
         }
 
-        $clientes = User::where('role', 'user')->orderBy('name')->get();
+        $clientes = User::whereIn('role', ['user', 'cliente'])->orderBy('name')->get();
 
         return view('appointments.create', compact('services', 'barbers', 'clientes'));
     }
@@ -47,7 +47,7 @@ class AppointmentController extends Controller
             'tip'            => 'nullable|numeric|min:0',
         ]);
 
-        $clientId = auth()->user()->isUser()
+        $clientId = (auth()->check() && auth()->user()->isCliente())
             ? auth()->id()
             : ($validated['client_id'] ?? null);
 
@@ -59,7 +59,7 @@ class AppointmentController extends Controller
         $hour = (int)$validated['hour'];
         if ($validated['period'] === 'PM' && $hour !== 12) {
             $hour +=12;
-           } elseif ($validated['period'] === 'AM' && $hour === 12) {
+        } elseif ($validated['period'] === 'AM' && $hour === 12) {
             $hour = 0; 
         }
 
@@ -82,35 +82,40 @@ class AppointmentController extends Controller
 
         // Confirmación inmediata
         try {
-            $wapi    = new WapiService();
-            $client  = $appointment->client;
-            $barber  = $appointment->barber;
-            $service = $appointment->service;
-            $fecha   = $appointmentDate->format('d/m/Y');
-            $hora    = $appointmentDate->format('H:i');
+            if (class_exists(WapiService::class)) {
+                $wapi    = new WapiService();
+                $client  = $appointment->client;
+                $barber  = $appointment->barber;
+                $service = $appointment->service;
+                $fecha   = $appointmentDate->format('d/m/Y');
+                $hora    = $appointmentDate->format('H:i');
 
-            if ($client?->phone) {
-                $wapi->sendMessage($client->phone,
-                    "✅ *Cita Confirmada - BarberPro*\n\n" .
-                    "Hola {$client->name}, tu cita ha sido agendada.\n\n" .
-                    "📅 Fecha: {$fecha}\n" .
-                    "🕐 Hora: {$hora}\n" .
-                    "✂️ Servicio: {$service->name}\n" .
-                    "👤 Barbero: {$barber->name}\n\n" .
-                    "Te enviaremos un recordatorio 1 hora antes. ¡Hasta pronto!"
-                );
+                if ($client?->phone && method_exists($wapi, 'sendMessage')) {
+                    $wapi->sendMessage($client->phone,
+                        "✅ *Cita Confirmada - BarberPro*\n\n" .
+                        "Hola {$client->name}, tu cita ha sido agendada.\n\n" .
+                        "📅 Fecha: {$fecha}\n" .
+                        "🕐 Hora: {$hora}\n" .
+                        "✂️ Servicio: {$service->name}\n" .
+                        "👤 Barbero: {$barber->name}\n\n" .
+                        "Te enviaremos un recordatorio 1 hora antes. ¡Hasta pronto!"
+                    );
+                }
             }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
         }
 
-        // Recordatorio 1 hora antes (si esa ventana ya pasó pero la cita sigue en el futuro, se manda de inmediato)
-        $reminderAt = $appointmentDate->copy()->subHour();
-        if ($appointmentDate->isFuture()) {
-            if ($reminderAt->isFuture()) {
-                SendAppointmentReminder::dispatch($appointment)->delay($reminderAt);
-            } else {
-                SendAppointmentReminder::dispatch($appointment);
+        // Recordatorio 1 hora antes
+        try {
+            $reminderAt = $appointmentDate->copy()->subHour();
+            if ($appointmentDate->isFuture()) {
+                if ($reminderAt->isFuture()) {
+                    SendAppointmentReminder::dispatch($appointment)->delay($reminderAt);
+                } else {
+                    SendAppointmentReminder::dispatch($appointment);
+                }
             }
+        } catch (\Throwable $e) {
         }
 
         return response()->json([

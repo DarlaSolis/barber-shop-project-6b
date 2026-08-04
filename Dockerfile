@@ -5,6 +5,7 @@ FROM php:8.2-fpm-alpine as base
 RUN apk add --no-cache \
     zip \
     unzip \
+    libzip-dev \
     curl \
     libpng-dev \
     libjpeg-turbo-dev \
@@ -17,7 +18,7 @@ RUN apk add --no-cache \
     npm
 
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo pdo_mysql mbstring gd xml bcmath intl
+    && docker-php-ext-install pdo pdo_mysql mbstring gd xml bcmath intl zip
 
 # Set working directory
 WORKDIR /var/www
@@ -28,8 +29,8 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Copy application files
 COPY . .
 
-# Install PHP dependencies
-RUN composer install --no-interaction --optimize-autoloader --no-dev
+# Install PHP dependencies ignoring platform reqs for zip extension compatibility
+RUN composer install --no-interaction --optimize-autoloader --no-dev --ignore-platform-reqs
 
 # Install NPM dependencies & build frontend assets
 RUN npm ci && npm run build

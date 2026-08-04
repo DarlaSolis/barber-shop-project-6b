@@ -11,7 +11,7 @@ use App\Http\Controllers\BarberController;
 use App\Http\Controllers\ReportesController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/reservar');
 });
 
 // Ruta pública exclusiva para clientes de Reserva Online (sin login, sin sidebar)

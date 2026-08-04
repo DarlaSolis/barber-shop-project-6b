@@ -4,64 +4,66 @@
 
 @section('content')
 <div class="max-w-8xl">
-    <h1 class="text-3xl font-bold text-gray-800 mb-8">Agendar Nueva Cita</h1>
+    <div class="flex items-center justify-between mb-8">
+        <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-100">Agendar Nueva Cita</h1>
+    </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
     {{-- PRIMER CONTAINER: Seleccionar / Crear Cliente --}}
-    <div class="bg-white rounded-lg shadow p-6">
-        <h3 class="text-xl font-bold text-gray-800 mb-4">Seleccionar Cliente</h3>
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-slate-700 transition-colors">
+        <h3 class="text-xl font-bold text-gray-800 dark:text-amber-400 mb-4 flex items-center gap-2">👤 Seleccionar Cliente</h3>
 
         <input type="hidden" id="client_id" name="client_id" value="">
 
         <div class="space-y-4">
             {{-- Cliente seleccionado --}}
-            <div id="cliente-seleccionado" class="hidden border border-amber-200 bg-amber-50 rounded-lg px-4 py-3">
+            <div id="cliente-seleccionado" class="hidden border border-amber-300 dark:border-amber-500 bg-amber-50 dark:bg-slate-900/80 rounded-lg px-4 py-3">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-3">
-                        <div id="sel-iniciales" class="w-8 h-8 rounded-full bg-amber-200 text-amber-800 flex items-center justify-center text-xs font-bold flex-shrink-0"></div>
-                        <div id="sel-nombre" class="text-sm font-bold text-gray-800"></div>
+                        <div id="sel-iniciales" class="w-8 h-8 rounded-full bg-amber-200 dark:bg-amber-600 text-amber-800 dark:text-white flex items-center justify-center text-xs font-bold flex-shrink-0"></div>
+                        <div id="sel-nombre" class="text-sm font-bold text-gray-800 dark:text-gray-100"></div>
                     </div>
-                    <button type="button" onclick="limpiarCliente()" class="text-xs text-gray-400 hover:text-red-500 transition">× Cambiar</button>
+                    <button type="button" onclick="limpiarCliente()" class="text-xs text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition">× Cambiar</button>
                 </div>
             </div>
 
             {{-- Búsqueda + lista --}}
-            <input type="text" id="buscar-cliente-cita" placeholder="Buscar cliente..."
-                class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500"/>
+            <input type="text" id="buscar-cliente-cita" placeholder="Buscar cliente por nombre..."
+                class="w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 transition"/>
 
-            <div id="lista-clientes-cita" class="hidden border border-gray-200 rounded-lg divide-y divide-gray-100 max-h-48 overflow-y-auto">
+            <div id="lista-clientes-cita" class="hidden border border-gray-200 dark:border-slate-700 rounded-lg divide-y divide-gray-100 dark:divide-slate-700 max-h-48 overflow-y-auto bg-white dark:bg-slate-900 shadow-lg">
                 @forelse($clientes as $cliente)
                     @php
                         $p = explode(' ', trim($cliente->name));
                         $ini = strtoupper(substr($p[0],0,1).(isset($p[1])?substr($p[1],0,1):''));
                     @endphp
-                    <div class="cliente-cita-item flex items-center gap-3 px-4 py-2.5 hover:bg-amber-50 cursor-pointer transition"
+                    <div class="cliente-cita-item flex items-center gap-3 px-4 py-2.5 hover:bg-amber-50 dark:hover:bg-slate-800 cursor-pointer transition"
                          data-id="{{ $cliente->id }}"
                          data-nombre="{{ $cliente->name }}"
                          data-iniciales="{{ $ini }}"
                          data-search="{{ strtolower($cliente->name) }}">
-                        <div class="w-7 h-7 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-xs font-bold flex-shrink-0">{{ $ini }}</div>
+                        <div class="w-7 h-7 rounded-full bg-amber-100 dark:bg-amber-800 text-amber-700 dark:text-amber-200 flex items-center justify-center text-xs font-bold flex-shrink-0">{{ $ini }}</div>
                         <div>
-                            <div class="text-sm font-semibold text-gray-800">{{ $cliente->name }}</div>
-                            <div class="text-xs text-gray-400">{{ $cliente->email }}</div>
+                            <div class="text-sm font-semibold text-gray-800 dark:text-gray-200">{{ $cliente->name }}</div>
+                            <div class="text-xs text-gray-400 dark:text-gray-400">{{ $cliente->email }}</div>
                         </div>
                     </div>
                 @empty
-                    <div class="px-4 py-4 text-center text-gray-400 text-sm">No hay clientes</div>
+                    <div class="px-4 py-4 text-center text-gray-400 dark:text-gray-500 text-sm">No hay clientes registrados</div>
                 @endforelse
             </div>
 
             {{-- Nuevo cliente rápido --}}
-            <div class="border-t border-gray-100 pt-4 space-y-2">
-                <p class="text-sm font-semibold text-gray-700">+ Nuevo Cliente</p>
+            <div class="border-t border-gray-100 dark:border-slate-700 pt-4 space-y-3">
+                <p class="text-sm font-semibold text-gray-700 dark:text-gray-300">+ Nuevo Cliente Rápido</p>
                 <input type="text" id="nuevo-nombre" placeholder="Nombre completo"
-                    class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500"/>
-                <input type="email" id="nuevo-email" placeholder="Email"
-                    class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500"/>
+                    class="w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"/>
+                <input type="email" id="nuevo-email" placeholder="Correo electrónico"
+                    class="w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"/>
                 <input type="text" id="nuevo-phone" placeholder="Teléfono (opcional)"
-                    class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500"/>
+                    class="w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"/>
                 <button type="button" onclick="crearCliente()"
-                    class="w-full bg-gray-800 hover:bg-gray-700 text-white text-sm font-semibold py-2 rounded-lg transition">
+                    class="w-full bg-amber-600 hover:bg-amber-500 text-white text-sm font-semibold py-2.5 rounded-lg transition shadow-md">
                     Registrar y Seleccionar
                 </button>
                 <p id="nuevo-error" class="text-xs text-red-500 hidden"></p>
@@ -70,45 +72,48 @@
     </div>
 
     <!-- Fecha y Hora -->
-    <div class="bg-white rounded-lg shadow p-6">
-            <h3 class="text-xl font-bold text-gray-800 mb-4">Selecciona Fecha y Hora</h3>
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-slate-700 transition-colors">
+            <h3 class="text-xl font-bold text-gray-800 dark:text-amber-400 mb-4 flex items-center gap-2">📅 Selecciona Fecha y Hora</h3>
 
-            <form id="appointmentForm" class="space-y-6">
+            <form id="appointmentForm" class="space-y-5">
                 <div>
-                    <label class="block text-gray-700 font-semibold mb-2">Fecha</label>
-                    <input type="date" id="date" name="date" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500" min="{{ date('Y-m-d') }}">
+                    <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2 text-sm">Fecha de la Cita</label>
+                    <input type="date" id="date" name="date" required class="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500" min="{{ date('Y-m-d') }}">
                 </div>
 
-                <div class="grid grid-cols-3 gap-4">
+                <div class="grid grid-cols-3 gap-3">
                     <div>
-                        <label class="block text-gray-700 font-semibold mb-2">Horas</label>
-                        <select id="hour" name="hour" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500">
-                            <option value="">Selecciona</option>
+                        <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2 text-xs">Horas</label>
+                        <select id="hour" name="hour" required class="w-full px-2 py-2 border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
+                            <option value="">Hora</option>
                             @for($i = 1; $i <= 12; $i++)
                                 <option value="{{ $i }}">{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</option>
                             @endfor
                         </select>
                     </div>
                     <div>
-                        <label class="block text-gray-700 font-semibold mb-2">Minutos</label>
-                        <select id="minute" name="minute" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="">Selecciona</option>
+                        <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2 text-xs">Minutos</label>
+                        <select id="minute" name="minute" required class="w-full px-2 py-2 border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
+                            <option value="">Minuto</option>
                             @for($i = 0; $i <= 50; $i += 10)
                                 <option value="{{ $i }}">{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</option>
                             @endfor
                         </select>
                     </div>
                     <div>
-                        <label class="block text-gray-700 font-semibold mb-2">Período</label>
-                        <select id="period" name="period" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500">
-                            <option value="">Selecciona</option>
+                        <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2 text-xs">Período</label>
+                        <select id="period" name="period" required class="w-full px-2 py-2 border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
+                            <option value="">AM/PM</option>
                             <option value="AM">AM</option>
                             <option value="PM">PM</option>
                         </select>
                     </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 pt-2">
                     <div>
-                        <label class="block text-gray-700 font-semibold mb-2">Método de pago</label>
-                        <select id="payment_method" name="payment_method" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500">
+                        <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2 text-xs">Método de pago</label>
+                        <select id="payment_method" name="payment_method" required class="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
                             <option value="">Selecciona</option>
                             <option value="Efectivo">Efectivo</option>
                             <option value="Tarjeta">Tarjeta</option>
@@ -116,21 +121,21 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-gray-700 font-semibold mb-2">Propina</label>
-                        <input type="text" id="tip" name="tip" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500" placeholder="Ingresa la propina (opcional)">
+                        <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2 text-xs">Propina (opcional)</label>
+                        <input type="text" id="tip" name="tip" class="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="$0.00">
                     </div>
                 </div>
             </form>
         </div>
 
     <!-- Servicios + Barberos -->
-    <div class="bg-white rounded-lg shadow p-6">
-            <h3 class="text-xl font-bold text-gray-800 mb-4">Selecciona Servicio y Barbero</h3>
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-slate-700 transition-colors">
+            <h3 class="text-xl font-bold text-gray-800 dark:text-amber-400 mb-4 flex items-center gap-2">✂️ Servicio y Barbero</h3>
 
             <div class="space-y-6">
                 <div>
-                    <label class="block text-gray-700 font-semibold mb-3">Tipo de Servicio</label>
-                    <select id="service_id" name="service_id" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" onchange="checkFormValidity()">
+                    <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2 text-sm">Tipo de Servicio</label>
+                    <select id="service_id" name="service_id" required class="w-full px-4 py-2.5 border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" onchange="checkFormValidity()">
                         <option value="">-- Selecciona un servicio --</option>
                         @foreach($services as $service)
                             <option value="{{ $service->id }}">{{ $service->name }} - ${{ number_format($service->price, 2) }}</option>
@@ -138,16 +143,16 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-gray-700 font-semibold mb-3">Selecciona Barbero</label>
-                    <select id="barber_id" name="barber_id" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500" onchange="checkFormValidity()">
+                    <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2 text-sm">Selecciona Barbero</label>
+                    <select id="barber_id" name="barber_id" required class="w-full px-4 py-2.5 border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" onchange="checkFormValidity()">
                         <option value="">-- Selecciona un barbero --</option>
                         @foreach($barbers as $barber)
                             <option value="{{ $barber->user_id }}">{{ $barber->user->name }}</option>
                         @endforeach
                     </select>
                 </div>
-                <button id="submitBtn" type="submit" form="appointmentForm" class="w-full bg-yellow-500 hover:bg-yellow-600 disabled:bg-gray-400 text-white font-bold py-3 px-4 rounded-lg transition cursor-not-allowed" disabled onclick="submitAppointment(event)">
-                    Reservar
+                <button id="submitBtn" type="submit" form="appointmentForm" class="w-full bg-amber-600 hover:bg-amber-500 disabled:bg-gray-400 dark:disabled:bg-slate-700 text-white font-bold py-3.5 px-4 rounded-xl transition cursor-not-allowed shadow-md" disabled onclick="submitAppointment(event)">
+                    Confirmar y Reservar Cita
                 </button>
             </div>
         </div>
@@ -183,8 +188,8 @@ document.getElementById('service_id').addEventListener('change', checkFormValidi
 document.querySelectorAll('.cliente-cita-item').forEach(function(el) {
     el.addEventListener('click', function() {
         seleccionarCliente(this.dataset.id, this.dataset.nombre, this.dataset.iniciales);
-        document.querySelectorAll('.cliente-cita-item').forEach(e => e.classList.remove('bg-amber-100'));
-        this.classList.add('bg-amber-100');
+        document.querySelectorAll('.cliente-cita-item').forEach(e => e.classList.remove('bg-amber-100', 'dark:bg-amber-900/50'));
+        this.classList.add('bg-amber-100', 'dark:bg-amber-900/50');
     });
 });
 
@@ -199,7 +204,7 @@ function seleccionarCliente(id, nombre, iniciales) {
 function limpiarCliente() {
     document.getElementById('client_id').value = '';
     document.getElementById('cliente-seleccionado').classList.add('hidden');
-    document.querySelectorAll('.cliente-cita-item').forEach(e => e.classList.remove('bg-amber-100'));
+    document.querySelectorAll('.cliente-cita-item').forEach(e => e.classList.remove('bg-amber-100', 'dark:bg-amber-900/50'));
     checkFormValidity();
 }
 
@@ -260,16 +265,16 @@ function crearCliente() {
             // Agregar a lista
             const lista = document.getElementById('lista-clientes-cita');
             const div = document.createElement('div');
-            div.className = 'cliente-cita-item flex items-center gap-3 px-4 py-2.5 hover:bg-amber-50 cursor-pointer transition bg-amber-100';
+            div.className = 'cliente-cita-item flex items-center gap-3 px-4 py-2.5 hover:bg-amber-50 dark:hover:bg-slate-800 cursor-pointer transition bg-amber-100 dark:bg-amber-900/50';
             div.dataset.id = c.id;
             div.dataset.nombre = c.name;
             div.dataset.iniciales = ini;
             div.dataset.search = c.name.toLowerCase();
-            div.innerHTML = `<div class="w-8 h-8 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-xs font-bold flex-shrink-0">${ini}</div><div><div class="text-sm font-semibold text-gray-800">${c.name}</div><div class="text-xs text-gray-400">${c.email}</div></div>`;
+            div.innerHTML = `<div class="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-800 text-amber-700 dark:text-amber-200 flex items-center justify-center text-xs font-bold flex-shrink-0">${ini}</div><div><div class="text-sm font-semibold text-gray-800 dark:text-gray-200">${c.name}</div><div class="text-xs text-gray-400">${c.email}</div></div>`;
             div.addEventListener('click', function() {
                 seleccionarCliente(this.dataset.id, this.dataset.nombre, this.dataset.iniciales);
-                document.querySelectorAll('.cliente-cita-item').forEach(e => e.classList.remove('bg-amber-100'));
-                this.classList.add('bg-amber-100');
+                document.querySelectorAll('.cliente-cita-item').forEach(e => e.classList.remove('bg-amber-100', 'dark:bg-amber-900/50'));
+                this.classList.add('bg-amber-100', 'dark:bg-amber-900/50');
             });
             lista.prepend(div);
 
