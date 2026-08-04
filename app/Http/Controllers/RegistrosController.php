@@ -52,7 +52,7 @@ class RegistrosController extends Controller
             'service_id'       => 'required|exists:services,id',
             'barber_id'        => 'required|exists:users,id',
             'payment_method'   => 'nullable|in:Efectivo,Tarjeta,Transferencia',
-            'status'           => 'required|in:pending,confirmed,completed,cancelled',
+            'status'           => 'required|in:pending,confirmed,in_process,completed,cancelled',
         ]);
 
         $appointment->update($request->only(['appointment_date', 'service_id', 'barber_id', 'payment_method', 'status']));
