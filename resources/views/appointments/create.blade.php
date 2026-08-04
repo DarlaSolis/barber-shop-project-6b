@@ -130,7 +130,7 @@
 
     <!-- Servicios + Barberos + Sucursal -->
     <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-slate-700 transition-colors">
-            <h3 class="text-lg font-bold text-gray-900 dark:text-amber-400 mb-4">Sucursal, Servicio y Barbero</h3>
+            <h3 class="text-lg font-bold text-gray-900 dark:text-amber-400 mb-4">Servicio y Barbero</h3>
 
             <div class="space-y-5">
                 @if(isset($branches) && count($branches) > 0)
@@ -330,7 +330,7 @@ function submitAppointment(event) {
     .then(data => {
         if (data.success) {
             Swal.fire({
-                title: '¡Cita agendada!',
+                title: 'Cita Confirmada',
                 text: 'La cita fue reservada exitosamente.',
                 icon: 'success',
                 confirmButtonColor: '#f59e0b',
