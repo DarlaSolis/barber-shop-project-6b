@@ -18,6 +18,11 @@ class AppointmentController extends Controller
     {
         $services = Service::all();
         $barbers  = Barber::with('user')->get();
+
+        if (auth()->user()->isUser()) {
+            return view('cliente.reservar', compact('services', 'barbers'));
+        }
+
         $clientes = User::where('role', 'user')->orderBy('name')->get();
 
         return view('appointments.create', compact('services', 'barbers', 'clientes'));
@@ -32,10 +37,18 @@ class AppointmentController extends Controller
             'period'         => 'required|in:AM,PM',
             'service_id'     => 'required|exists:services,id',
             'barber_id'      => 'required|exists:users,id',
-            'client_id'      => 'required|exists:users,id',
+            'client_id'      => 'nullable|exists:users,id',
             'payment_method' => 'nullable|in:Efectivo,Tarjeta,Transferencia',
             'tip'            => 'nullable|numeric|min:0',
         ]);
+
+        $clientId = auth()->user()->isUser()
+            ? auth()->id()
+            : ($validated['client_id'] ?? null);
+
+        if (! $clientId) {
+            return response()->json(['success' => false, 'message' => 'Debes seleccionar un cliente.'], 422);
+        }
 
         // Formato de 24 horas
         $hour = (int)$validated['hour'];
@@ -51,7 +64,7 @@ class AppointmentController extends Controller
         );
 
         $appointment = Appointment::create([
-            'client_id'      => $validated['client_id'],
+            'client_id'      => $clientId,
             'barber_id'      => $validated['barber_id'],
             'service_id'     => $validated['service_id'],
             'appointment_date' => $appointmentDate,

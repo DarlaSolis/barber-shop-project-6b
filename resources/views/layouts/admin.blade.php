@@ -26,7 +26,9 @@
                         Agendar Cita
                     </a>
                 @elseif(Auth::check() && Auth::user()->role === 'user')
-                    {{-- Cliente --}}
+                    <a href="{{ route('dashboard') }}" class="block px-4 py-3 rounded-lg {{ request()->routeIs('dashboard') ? 'bg-gray-800 text-white' : 'text-black hover:bg-gray-100' }}">
+                        Mis Citas
+                    </a>
                     <a href="{{ route('appointments.create') }}" class="block px-4 py-3 rounded-lg {{ request()->routeIs('appointments.create') ? 'bg-gray-800 text-white' : 'text-black hover:bg-gray-100' }}">
                         Agendar Cita
                     </a>
