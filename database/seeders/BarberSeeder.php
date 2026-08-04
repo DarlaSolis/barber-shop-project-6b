@@ -15,9 +15,9 @@ class BarberSeeder extends Seeder
     public function run(): void
     {
         $barbers = [
-            ['name' => 'Charly Martínez', 'email' => 'charly0620@barbershop.com', 'password' => 'Charly123'],
-            ['name' => 'Manuel Rubio', 'email' => 'manny007@barbershop.com', 'password' => 'Manuel123'],
-            ['name' => 'Carlos López', 'email' => 'test@example.com', 'password' => '12345678'],
+            ['name' => 'Charly Martínez', 'email' => 'charly@barbershop.com', 'password' => 'Charly123'],
+            ['name' => 'Joel Sánchez', 'email' => 'joel@barbershop.com', 'password' => 'Joel123'],
+            ['name' => 'Darla Solis', 'email' => 'darla@barbershop.com', 'password' => 'Darla123'],
 
         ];
 

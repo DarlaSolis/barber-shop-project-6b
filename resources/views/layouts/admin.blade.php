@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-
 <body class="bg-gray-50">
     <div class="flex">
         <!-- SIDEBAR -->
@@ -26,43 +24,43 @@
                         Agendar Cita
                     </a>
                 @elseif(Auth::user()->isBarber())
-                    {{-- Opciones para el Barbero --}}
-                    <a href="{{ route('barber.index') }}"
-                        class="block px-4 py-3 rounded-lg {{ request()->routeIs('barber.index') ? 'bg-gray-800 text-white' : 'text-black hover:bg-gray-100' }}">
+                    {{-- Barbero --}}
+                    <a href="{{ route('barber.index') }}" class="block px-4 py-3 rounded-lg {{ request()->routeIs('barber.index') ? 'bg-gray-800 text-white' : 'text-black hover:bg-gray-100' }}">
                         Panel Barbero
                     </a>
-                    <a href="{{ route('appointments.create') }}"
-                        class="block px-4 py-3 rounded-lg {{ request()->routeIs('appointments.create') ? 'bg-gray-800 text-white' : 'text-black hover:bg-gray-100' }}">
+                    <a href="{{ route('appointments.create') }}" class="block px-4 py-3 rounded-lg {{ request()->routeIs('appointments.create') ? 'bg-gray-800 text-white' : 'text-black hover:bg-gray-100' }}">
                         Agendar Cita
                     </a>
                 @elseif(Auth::user()->isCliente())
-                    {{-- Opciones para el Cliente --}}
-                    <a href="{{ route('appointments.create') }}"
-                        class="block px-4 py-3 rounded-lg {{ request()->routeIs('appointments.create') ? 'bg-gray-800 text-white' : 'text-black hover:bg-gray-100' }}">
+                    {{-- Cliente --}}
+                    <a href="{{ route('dashboard') }}" class="block px-4 py-3 rounded-lg {{ request()->routeIs('dashboard') ? 'bg-gray-800 text-white' : 'text-black hover:bg-gray-100' }}">
+                        Mis Citas
+                    </a>
+                    <a href="{{ route('appointments.create') }}" class="block px-4 py-3 rounded-lg {{ request()->routeIs('appointments.create') ? 'bg-gray-800 text-white' : 'text-black hover:bg-gray-100' }}">
                         Agendar Cita
                     </a>
                 @else
-                    {{-- Opciones para Administrador / General --}}
-                    <a href="{{ route('dashboard') }}"
-                        class="block px-4 py-3 rounded-lg {{ request()->routeIs('dashboard') ? 'bg-gray-800 text-white' : 'text-black hover:bg-gray-100' }}">
+                    {{-- Administrador / General --}}
+                    <a href="{{ route('dashboard') }}" class="block px-4 py-3 rounded-lg {{ request()->routeIs('dashboard') ? 'bg-gray-800 text-white' : 'text-black hover:bg-gray-100' }}">
                         Dashboard
                     </a>
-                    <a href="{{ route('barber.index') }}"
-                        class="block px-4 py-3 rounded-lg {{ request()->routeIs('barber.index') ? 'bg-gray-800 text-white' : 'text-black hover:bg-gray-100' }}">
+                    <a href="{{ route('barber.index') }}" class="block px-4 py-3 rounded-lg {{ request()->routeIs('barber.index') ? 'bg-gray-800 text-white' : 'text-black hover:bg-gray-100' }}">
                         Panel Barbero
                     </a>
-                    <a href="{{ route('appointments.create') }}"
-                        class="block px-4 py-3 rounded-lg {{ request()->routeIs('appointments.create') ? 'bg-gray-800 text-white' : 'text-black hover:bg-gray-100' }}">
+                    <a href="{{ route('appointments.create') }}" class="block px-4 py-3 rounded-lg {{ request()->routeIs('appointments.create') ? 'bg-gray-800 text-white' : 'text-black hover:bg-gray-100' }}">
                         Agendar Cita
                     </a>
-                    <a href="{{ route('registros.index') }}"
-                        class="block px-4 py-3 rounded-lg {{ request()->routeIs('registros.index') ? 'bg-gray-800 text-white' : 'text-black hover:bg-gray-100' }}">
+                    <a href="{{ route('registros.index') }}" class="block px-4 py-3 rounded-lg {{ request()->routeIs('registros.index') ? 'bg-gray-800 text-white' : 'text-black hover:bg-gray-100' }}">
                         Registrar Cobros
                     </a>
-                    <a href="{{ route('clientes.index') }}"
-                        class="block px-4 py-3 rounded-lg {{ request()->routeIs('clientes.index') ? 'bg-gray-800 text-white' : 'text-black hover:bg-gray-100' }}">
+                    <a href="{{ route('clientes.index') }}" class="block px-4 py-3 rounded-lg {{ request()->routeIs('clientes.index') ? 'bg-gray-800 text-white' : 'text-black hover:bg-gray-100' }}">
                         Gestión de Clientes
                     </a>
+                    @if(Route::has('reportes.index'))
+                        <a href="{{ route('reportes.index') }}" class="block px-4 py-3 rounded-lg {{ request()->routeIs('reportes.index') ? 'bg-gray-800 text-white' : 'text-black hover:bg-gray-100' }}">
+                            Reportes
+                        </a>
+                    @endif
                 @endif
             </nav>
 
@@ -101,5 +99,4 @@
         </main>
     </div>
 </body>
-
 </html>
