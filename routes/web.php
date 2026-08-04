@@ -31,6 +31,7 @@ Route::middleware('auth')->group(function () {
     // Barbero y admin: panel del barbero
     Route::middleware('role:barber,admin')->group(function () {
         Route::get('/barber', [BarberController::class, 'index'])->name('barber.index');
+        Route::get('/barber/export', [BarberController::class, 'export'])->name('barber.export');
         Route::put('/barber/appointments/{appointment}/status', [BarberController::class, 'updateStatus'])->name('barber.appointments.updateStatus');
     });
 

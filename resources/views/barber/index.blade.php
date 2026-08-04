@@ -11,23 +11,31 @@
             <p class="text-gray-500 text-sm">Gestiona tus citas de la jornada, haz check-in y consulta tus comisiones</p>
         </div>
 
-        {{-- Filtros: Barbero y Fecha --}}
-        <form method="GET" action="{{ route('barber.index') }}" class="flex flex-wrap items-center gap-3">
+        {{-- Filtros: (barbero solo para admin), rango de fechas, estado, exportar --}}
+        <form method="GET" action="{{ route('barber.index') }}" class="flex flex-wrap items-end gap-3">
+            @if(auth()->user()->role === 'admin')
+                <div>
+                    <label for="barber_id" class="block text-xs font-semibold text-gray-500 uppercase mb-1">Barbero</label>
+                    <select name="barber_id" id="barber_id" onchange="this.form.submit()"
+                        class="px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        @foreach($barbers as $b)
+                            <option value="{{ $b->user_id }}" {{ $selectedBarberId == $b->user_id ? 'selected' : '' }}>
+                                {{ $b->user->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            @endif
+
             <div>
-                <label for="barber_id" class="block text-xs font-semibold text-gray-500 uppercase mb-1">Barbero</label>
-                <select name="barber_id" id="barber_id" onchange="this.form.submit()"
+                <label for="desde" class="block text-xs font-semibold text-gray-500 uppercase mb-1">Desde</label>
+                <input type="date" name="desde" id="desde" value="{{ $desde }}" onchange="this.form.submit()"
                     class="px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-amber-500">
-                    @foreach($barbers as $b)
-                        <option value="{{ $b->user_id }}" {{ $selectedBarberId == $b->user_id ? 'selected' : '' }}>
-                            {{ $b->user->name }}
-                        </option>
-                    @endforeach
-                </select>
             </div>
 
             <div>
-                <label for="fecha" class="block text-xs font-semibold text-gray-500 uppercase mb-1">Fecha</label>
-                <input type="date" name="fecha" id="fecha" value="{{ $selectedDate }}" onchange="this.form.submit()"
+                <label for="hasta" class="block text-xs font-semibold text-gray-500 uppercase mb-1">Hasta</label>
+                <input type="date" name="hasta" id="hasta" value="{{ $hasta }}" onchange="this.form.submit()"
                     class="px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-amber-500">
             </div>
 
@@ -35,14 +43,22 @@
                 <label for="status" class="block text-xs font-semibold text-gray-500 uppercase mb-1">Estado</label>
                 <select name="status" id="status" onchange="this.form.submit()"
                     class="px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-amber-500">
-                    <option value="todos" {{ request('status') == 'todos' ? 'selected' : '' }}>Todos los estados</option>
-                    <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pendiente</option>
-                    <option value="confirmed" {{ request('status') == 'confirmed' ? 'selected' : '' }}>Confirmada</option>
-                    <option value="in_process" {{ request('status') == 'in_process' ? 'selected' : '' }}>En Proceso (Check-in)</option>
-                    <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completada</option>
-                    <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Cancelada</option>
+                    <option value="todos" {{ $status == 'todos' ? 'selected' : '' }}>Todos los estados</option>
+                    <option value="pending" {{ $status == 'pending' ? 'selected' : '' }}>Pendiente</option>
+                    <option value="confirmed" {{ $status == 'confirmed' ? 'selected' : '' }}>Confirmada</option>
+                    <option value="in_process" {{ $status == 'in_process' ? 'selected' : '' }}>En Proceso (Check-in)</option>
+                    <option value="completed" {{ $status == 'completed' ? 'selected' : '' }}>Completada</option>
+                    <option value="cancelled" {{ $status == 'cancelled' ? 'selected' : '' }}>Cancelada</option>
                 </select>
             </div>
+
+            <a href="{{ route('barber.export', array_filter(['barber_id' => request('barber_id'), 'desde' => $desde, 'hasta' => $hasta, 'status' => $status])) }}"
+               class="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold px-4 py-2 rounded-lg transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/>
+                </svg>
+                Exportar CSV
+            </a>
         </form>
     </div>
 
@@ -60,7 +76,7 @@
         {{-- Tarjeta 1: Total Citas --}}
         <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
             <div class="flex items-center justify-between mb-2">
-                <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Citas ({{ \Carbon\Carbon::parse($selectedDate)->format('d/m/Y') }})</span>
+                <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Citas ({{ \Carbon\Carbon::parse($desde)->format('d/m') }}–{{ \Carbon\Carbon::parse($hasta)->format('d/m') }})</span>
                 <div class="p-2 bg-blue-50 text-blue-600 rounded-lg">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
@@ -110,7 +126,7 @@
                 </div>
             </div>
             <div class="text-3xl font-extrabold text-purple-600">${{ number_format($totalPropinas, 2) }}</div>
-            <div class="text-xs text-gray-500 mt-1">Acumuladas hoy</div>
+            <div class="text-xs text-gray-500 mt-1">Acumuladas en el rango</div>
         </div>
     </div>
 

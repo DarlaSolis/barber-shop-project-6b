@@ -6,7 +6,7 @@ use App\Models\Appointment;
 use App\Models\Barber;
 use App\Models\Service;
 use App\Models\User;
-use App\Services\TwilioService;
+use App\Services\WapiService;
 use App\Jobs\SendAppointmentReminder;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -64,7 +64,7 @@ class AppointmentController extends Controller
 
         // Confirmación inmediata
         try {
-            $twilio  = new TwilioService();
+            $wapi    = new WapiService();
             $client  = $appointment->client;
             $barber  = $appointment->barber;
             $service = $appointment->service;
@@ -72,7 +72,7 @@ class AppointmentController extends Controller
             $hora    = $appointmentDate->format('H:i');
 
             if ($client?->phone) {
-                $twilio->sendWhatsApp($client->phone,
+                $wapi->sendMessage($client->phone,
                     "✅ *Cita Confirmada - BarberPro*\n\n" .
                     "Hola {$client->name}, tu cita ha sido agendada.\n\n" .
                     "📅 Fecha: {$fecha}\n" .
@@ -85,10 +85,14 @@ class AppointmentController extends Controller
         } catch (\Exception $e) {
         }
 
-        // Recordatorio 1 hora antes
+        // Recordatorio 1 hora antes (si esa ventana ya pasó pero la cita sigue en el futuro, se manda de inmediato)
         $reminderAt = $appointmentDate->copy()->subHour();
-        if ($reminderAt->isFuture()) {
-            SendAppointmentReminder::dispatch($appointment)->delay($reminderAt);
+        if ($appointmentDate->isFuture()) {
+            if ($reminderAt->isFuture()) {
+                SendAppointmentReminder::dispatch($appointment)->delay($reminderAt);
+            } else {
+                SendAppointmentReminder::dispatch($appointment);
+            }
         }
 
         return response()->json([

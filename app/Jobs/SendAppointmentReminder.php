@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Appointment;
-use App\Services\TwilioService;
+use App\Services\WapiService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -16,7 +16,7 @@ class SendAppointmentReminder implements ShouldQueue
 
     public function __construct(public Appointment $appointment) {}
 
-    public function handle(TwilioService $twilio): void
+    public function handle(WapiService $wapi): void
     {
         $client = $this->appointment->client;
         $barber = $this->appointment->barber;
@@ -27,9 +27,14 @@ class SendAppointmentReminder implements ShouldQueue
         $fecha = $this->appointment->appointment_date->format('d/m/Y');
         $hora  = $this->appointment->appointment_date->format('H:i');
 
-        $twilio->sendTemplate($client->phone, env('TWILIO_REMINDER_SID'), [
-            '1' => $fecha,
-            '2' => $hora,
-        ]);
+        $wapi->sendMessage($client->phone,
+            "⏰ *Recordatorio de Cita - BarberPro*\n\n" .
+            "Hola {$client->name}, tu cita es en 1 hora.\n\n" .
+            "📅 Fecha: {$fecha}\n" .
+            "🕐 Hora: {$hora}\n" .
+            "✂️ Servicio: {$service->name}\n" .
+            "👤 Barbero: {$barber->name}\n\n" .
+            "¡Te esperamos!"
+        );
     }
 }
